@@ -1,0 +1,133 @@
+---
+title: "606 Final"
+author: "Lu Beyer"
+date: "4/27/2024"
+output: pdf_document
+---
+
+
+```{r}
+library(tidyverse)
+library(infer)
+
+data <- read.csv("Buf_Roch_2022.csv") %>% 
+  rename(Category = 1,
+         Buf_Population = 2,
+         Buf_Population_Disability = 3,
+         Buf_Disability_Percentage = 4,
+         Roch_Population = 5,
+         Roch_Population_Disability = 6,
+         Roch_Disability_Percentage = 7) %>% 
+  mutate(across(where(is.character), ~str_replace_all(., "Â", ""))) %>%
+  mutate(Category = str_trim(Category)) %>% 
+  mutate(across(where(is.character), ~str_replace_all(., "^N$", as.character(NA)))) %>% 
+  mutate(across(c(Buf_Population, Buf_Population_Disability), ~as.numeric(str_replace_all(., ",", "")))) %>% 
+  mutate(across(c(Roch_Population, Roch_Population_Disability), ~as.numeric(str_replace_all(., ",", "")))) %>% 
+  mutate(Buf_Disability_Percentage = as.numeric(str_remove(Buf_Disability_Percentage, "%")) / 100) %>% 
+  mutate(Roch_Disability_Percentage = as.numeric(str_remove(Roch_Disability_Percentage, "%")) / 100) %>% 
+  mutate(Buf_Population_Nondisabled = Buf_Population - Buf_Population_Disability,
+         Roch_Population_Nondisabled = Roch_Population - Roch_Population_Disability) %>% 
+  select(Category, Buf_Population, Buf_Population_Disability, Buf_Population_Nondisabled, Buf_Disability_Percentage,
+         Roch_Population, Roch_Population_Disability, Roch_Population_Nondisabled, Roch_Disability_Percentage)
+
+
+
+sex <- data %>% 
+  slice(3:4)
+
+race <- data %>% 
+  slice(6:14)
+
+age <- data %>% 
+  slice(16:21)
+```
+```{r}
+
+age_results <- age %>% 
+  rowwise() %>%
+  summarise(
+    Category,
+    p_value = prop.test(
+      x = c(Buf_Population_Disability, Roch_Population_Disability), 
+      n = c(Buf_Population, Roch_Population),
+      correct = FALSE  
+    )$p.value
+  )
+
+print(age_results)
+```
+```{r}
+specific_age_group <- age %>%
+  filter(Category == "Under 5 years") %>%
+  summarise(Total_Disability = sum(Buf_Population_Disability, Roch_Population_Disability),
+            Total_Population = sum(Buf_Population, Roch_Population))
+
+# Convert to factor with success as having a disability
+specific_age_group <- specific_age_group %>%
+  mutate(disability_status = if_else(Total_Disability / Total_Population > 0.5, "yes", "no"))
+
+# Infer pipeline
+bootstrap_results <- specific_age_group %>%
+  specify(response = disability_status, success = "yes") %>%
+  generate(reps = 1000, type = "bootstrap") %>%
+  calculate(stat = "prop") %>%
+  get_ci(level = 0.95)
+```
+
+```{r}
+race_results <- race %>% 
+  rowwise() %>%
+  filter(Buf_Population > 0, Roch_Population > 0, !is.na(Buf_Population_Disability), !is.na(Roch_Population_Disability)) %>%
+  summarise(
+    Category,
+    p_value = prop.test(
+      x = c(Buf_Population_Disability, Roch_Population_Disability), 
+      n = c(Buf_Population, Roch_Population),
+      correct = FALSE  
+    )$p.value
+  )
+
+print(race_results)
+
+```
+
+```{r}
+cat <- c("Under 5 years", "5 to 17 years", "18 to 34 years", "35 to 64 years", "65 to 74 years", "75 years and over")
+
+age_long <- age %>%
+  pivot_longer(
+    cols = c(Buf_Disability_Percentage, Roch_Disability_Percentage),
+    names_to = "City",
+    values_to = "Disability_Percentage"
+  ) %>%
+  mutate(Category = factor(Category, levels = rev(cat))) 
+
+ggplot(data = age_long, aes(x = Category, y = Disability_Percentage, fill = City)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  coord_flip()
+```
+
+```{r}
+sex_long <- sex %>%
+  pivot_longer(
+    cols = c(Buf_Disability_Percentage, Roch_Disability_Percentage),
+    names_to = "City",
+    values_to = "Disability_Percentage"
+  )
+
+ggplot(data = sex_long, aes(x = Category, y = Disability_Percentage, fill = City)) +
+  geom_bar(stat = "identity", position = "dodge")
+```
+
+```{r}
+race_long <- race %>%
+  pivot_longer(
+    cols = c(Buf_Disability_Percentage, Roch_Disability_Percentage),
+    names_to = "City",
+    values_to = "Disability_Percentage"
+  )
+
+ggplot(data = race_long, aes(x = Category, y = Disability_Percentage, fill = City)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  coord_flip()
+```
