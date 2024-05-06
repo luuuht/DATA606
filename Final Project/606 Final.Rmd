@@ -40,7 +40,43 @@ race <- data %>%
 
 age <- data %>% 
   slice(16:21)
+
+general <- data %>% 
+  slice(1, 3:4, 6:14, 16:21) %>% 
+  drop_na()
 ```
+
+```{r}
+general_table <- matrix(c(general$Buf_Population_Disability[1], general$Buf_Population_Nondisabled[1],
+                        general$Roch_Population_Disability[1], general$Roch_Population_Nondisabled[1]),
+                      nrow = 2, byrow = TRUE,
+                      dimnames = list(c("Buffalo", "Rochester"), c("Disability", "No Disability")))
+
+chisq_result_general <- chisq.test(general_table)
+print(chisq_result_general)
+```
+
+
+```{r}
+males_table <- matrix(c(sex$Buf_Population_Disability[1], sex$Buf_Population_Nondisabled[1],
+                        sex$Roch_Population_Disability[1], sex$Roch_Population_Nondisabled[1]),
+                      nrow = 2, byrow = TRUE,
+                      dimnames = list(c("Buffalo", "Rochester"), c("Disability", "No Disability")))
+
+chisq_result_males <- chisq.test(males_table)
+print(chisq_result_males)
+```
+
+```{r}
+females_table <- matrix(c(sex$Buf_Population_Disability[2], sex$Buf_Population_Nondisabled[2],
+                        sex$Roch_Population_Disability[2], sex$Roch_Population_Nondisabled[2]),
+                      nrow = 2, byrow = TRUE,
+                      dimnames = list(c("Buffalo", "Rochester"), c("Disability", "No Disability")))
+
+chisq_result_females <- chisq.test(females_table)
+print(chisq_result_females)
+```
+
 ```{r}
 
 age_results <- age %>% 
