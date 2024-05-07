@@ -56,6 +56,13 @@ chisq_result_general <- chisq.test(general_table)
 print(chisq_result_general)
 ```
 
+```{r}
+barplot(general_table,
+        beside = TRUE, 
+        col = c("lightblue", "pink"),
+        legend = rownames(general_table))
+
+```
 
 ```{r}
 males_table <- matrix(c(sex$Buf_Population_Disability[1], sex$Buf_Population_Nondisabled[1],
@@ -65,6 +72,12 @@ males_table <- matrix(c(sex$Buf_Population_Disability[1], sex$Buf_Population_Non
 
 chisq_result_males <- chisq.test(males_table)
 print(chisq_result_males)
+```
+```{r}
+barplot(males_table,
+        beside = TRUE, 
+        col = c("lightblue", "pink"),
+        legend = rownames(males_table))
 ```
 
 ```{r}
@@ -76,56 +89,35 @@ females_table <- matrix(c(sex$Buf_Population_Disability[2], sex$Buf_Population_N
 chisq_result_females <- chisq.test(females_table)
 print(chisq_result_females)
 ```
-
 ```{r}
+barplot(females_table,
+        beside = TRUE, 
+        col = c("lightblue", "lightpink"),
+        legend = rownames(females_table))
 
-age_results <- age %>% 
-  rowwise() %>%
-  summarise(
-    Category,
-    p_value = prop.test(
-      x = c(Buf_Population_Disability, Roch_Population_Disability), 
-      n = c(Buf_Population, Roch_Population),
-      correct = FALSE  
-    )$p.value
-  )
-
-print(age_results)
-```
-```{r}
-specific_age_group <- age %>%
-  filter(Category == "Under 5 years") %>%
-  summarise(Total_Disability = sum(Buf_Population_Disability, Roch_Population_Disability),
-            Total_Population = sum(Buf_Population, Roch_Population))
-
-# Convert to factor with success as having a disability
-specific_age_group <- specific_age_group %>%
-  mutate(disability_status = if_else(Total_Disability / Total_Population > 0.5, "yes", "no"))
-
-# Infer pipeline
-bootstrap_results <- specific_age_group %>%
-  specify(response = disability_status, success = "yes") %>%
-  generate(reps = 1000, type = "bootstrap") %>%
-  calculate(stat = "prop") %>%
-  get_ci(level = 0.95)
 ```
 
-```{r}
-race_results <- race %>% 
-  rowwise() %>%
-  filter(Buf_Population > 0, Roch_Population > 0, !is.na(Buf_Population_Disability), !is.na(Roch_Population_Disability)) %>%
-  summarise(
-    Category,
-    p_value = prop.test(
-      x = c(Buf_Population_Disability, Roch_Population_Disability), 
-      n = c(Buf_Population, Roch_Population),
-      correct = FALSE  
-    )$p.value
-  )
 
-print(race_results)
+```{r}
+table_u5 <- matrix(c(age$Buf_Population_Disability[1], age$Buf_Population_Nondisabled[1],
+                        age$Roch_Population_Disability[1], age$Roch_Population_Nondisabled[1]),
+                      nrow = 2, byrow = TRUE,
+                      dimnames = list(c("Buffalo", "Rochester"), c("Disability", "No Disability")))
+
+chisq_result_u5 <- chisq.test(table_u5)
+print(chisq_result_u5)
+```
+```{r}
+barplot(table_u5,
+        beside = TRUE, 
+        col = c("lightblue", "lightpink"),
+        legend = rownames(table_u5))
 
 ```
+
+
+
+
 
 ```{r}
 cat <- c("Under 5 years", "5 to 17 years", "18 to 34 years", "35 to 64 years", "65 to 74 years", "75 years and over")
