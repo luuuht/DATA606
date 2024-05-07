@@ -46,77 +46,6 @@ general <- data %>%
   drop_na()
 ```
 
-```{r}
-general_table <- matrix(c(general$Buf_Population_Disability[1], general$Buf_Population_Nondisabled[1],
-                        general$Roch_Population_Disability[1], general$Roch_Population_Nondisabled[1]),
-                      nrow = 2, byrow = TRUE,
-                      dimnames = list(c("Buffalo", "Rochester"), c("Disability", "No Disability")))
-
-chisq_result_general <- chisq.test(general_table)
-print(chisq_result_general)
-```
-
-```{r}
-barplot(general_table,
-        beside = TRUE, 
-        col = c("lightblue", "pink"),
-        legend = rownames(general_table))
-
-```
-
-```{r}
-males_table <- matrix(c(sex$Buf_Population_Disability[1], sex$Buf_Population_Nondisabled[1],
-                        sex$Roch_Population_Disability[1], sex$Roch_Population_Nondisabled[1]),
-                      nrow = 2, byrow = TRUE,
-                      dimnames = list(c("Buffalo", "Rochester"), c("Disability", "No Disability")))
-
-chisq_result_males <- chisq.test(males_table)
-print(chisq_result_males)
-```
-```{r}
-barplot(males_table,
-        beside = TRUE, 
-        col = c("lightblue", "pink"),
-        legend = rownames(males_table))
-```
-
-```{r}
-females_table <- matrix(c(sex$Buf_Population_Disability[2], sex$Buf_Population_Nondisabled[2],
-                        sex$Roch_Population_Disability[2], sex$Roch_Population_Nondisabled[2]),
-                      nrow = 2, byrow = TRUE,
-                      dimnames = list(c("Buffalo", "Rochester"), c("Disability", "No Disability")))
-
-chisq_result_females <- chisq.test(females_table)
-print(chisq_result_females)
-```
-```{r}
-barplot(females_table,
-        beside = TRUE, 
-        col = c("lightblue", "lightpink"),
-        legend = rownames(females_table))
-
-```
-
-
-```{r}
-table_u5 <- matrix(c(age$Buf_Population_Disability[1], age$Buf_Population_Nondisabled[1],
-                        age$Roch_Population_Disability[1], age$Roch_Population_Nondisabled[1]),
-                      nrow = 2, byrow = TRUE,
-                      dimnames = list(c("Buffalo", "Rochester"), c("Disability", "No Disability")))
-
-chisq_result_u5 <- chisq.test(table_u5)
-print(chisq_result_u5)
-```
-```{r}
-barplot(table_u5,
-        beside = TRUE, 
-        col = c("lightblue", "lightpink"),
-        legend = rownames(table_u5))
-
-```
-
-
-
 
 
 ```{r}
@@ -159,3 +88,253 @@ ggplot(data = race_long, aes(x = Category, y = Disability_Percentage, fill = Cit
   geom_bar(stat = "identity", position = "dodge") +
   coord_flip()
 ```
+
+
+
+
+```{r}
+general_table <- matrix(c(general$Buf_Population_Disability[1], general$Buf_Population_Nondisabled[1],
+                        general$Roch_Population_Disability[1], general$Roch_Population_Nondisabled[1]),
+                      nrow = 2, byrow = TRUE,
+                      dimnames = list(c("Buffalo", "Rochester"), c("Disability", "No Disability")))
+
+chisq_result_general <- chisq.test(general_table)
+print(chisq_result_general)
+
+barplot(general_table,
+        beside = TRUE, 
+        col = c("lightblue", "pink"),
+        ylim = c(0, max(general_table) * 1.4),
+        legend = rownames(general_table),
+        main = "Count of General Population Difference in Disability Status")
+
+print(chisq_result_general$residuals)
+```
+```{r}
+#Under 5
+age_table <- matrix(c(age$Buf_Population_Disability[1], age$Buf_Population_Nondisabled[1],
+                        age$Roch_Population_Disability[1], age$Roch_Population_Nondisabled[1]),
+                      nrow = 2, byrow = TRUE,
+                      dimnames = list(c("Buffalo", "Rochester"), c("Disability", "No Disability")))
+
+chisq_result_age <- chisq.test(age_table)
+print(chisq_result_age)
+
+barplot(age_table,
+        beside = TRUE, 
+        col = c("lightblue", "pink"),
+        ylim = c(0, max(age_table) * 1.4),
+        legend = rownames(age_table),
+        main = "Difference in Disability Status, Age Under 5 Years")
+
+
+chisq_result_age$stdres
+```
+
+```{r}
+#5 to 17 Years
+age_table <- matrix(c(age$Buf_Population_Disability[2], age$Buf_Population_Nondisabled[2],
+                        age$Roch_Population_Disability[2], age$Roch_Population_Nondisabled[2]),
+                      nrow = 2, byrow = TRUE,
+                      dimnames = list(c("Buffalo", "Rochester"), c("Disability", "No Disability")))
+
+chisq_result_age <- chisq.test(age_table)
+print(chisq_result_age)
+
+barplot(age_table,
+        beside = TRUE, 
+        col = c("lightblue", "pink"),
+        ylim = c(0, max(age_table) * 1.4),
+        legend = rownames(age_table),
+        main = "Difference in Disability Status, Age 5 to 17 Years")
+
+
+chisq_result_age$stdres
+```
+
+```{r}
+#18 to 34 Years
+age_table <- matrix(c(age$Buf_Population_Disability[3], age$Buf_Population_Nondisabled[3],
+                        age$Roch_Population_Disability[3], age$Roch_Population_Nondisabled[3]),
+                      nrow = 2, byrow = TRUE,
+                      dimnames = list(c("Buffalo", "Rochester"), c("Disability", "No Disability")))
+
+chisq_result_age <- chisq.test(age_table)
+print(chisq_result_age)
+
+barplot(age_table,
+        beside = TRUE, 
+        col = c("lightblue", "pink"),
+        ylim = c(0, max(age_table) * 1.4),
+        legend = rownames(age_table),
+        main = "Difference in Disability Status, Age 5 to 17 Years")
+
+
+chisq_result_age$stdres
+```
+
+```{r}
+#Two or More Races
+race_table <- matrix(c(race$Buf_Population_Disability[7], race$Buf_Population_Nondisabled[7],
+                        race$Roch_Population_Disability[7], race$Roch_Population_Nondisabled[7]),
+                      nrow = 2, byrow = TRUE,
+                      dimnames = list(c("Buffalo", "Rochester"), c("Disability", "No Disability")))
+
+chisq_result_race <- chisq.test(race_table)
+print(chisq_result_race)
+
+barplot(race_table,
+        beside = TRUE, 
+        col = c("lightblue", "pink"),
+        ylim = c(0, max(race_table) * 1.4),
+        legend = rownames(race_table),
+        main = "Difference in Disability Status, Two or More Races")
+
+
+chisq_result_race$stdres
+```
+
+```{r}
+#White
+race_table <- matrix(c(race$Buf_Population_Disability[1], race$Buf_Population_Nondisabled[1],
+                        race$Roch_Population_Disability[1], race$Roch_Population_Nondisabled[1]),
+                      nrow = 2, byrow = TRUE,
+                      dimnames = list(c("Buffalo", "Rochester"), c("Disability", "No Disability")))
+
+chisq_result_race <- chisq.test(race_table)
+print(chisq_result_race)
+
+barplot(race_table,
+        beside = TRUE, 
+        col = c("lightblue", "pink"),
+        ylim = c(0, max(race_table) * 1.4),
+        legend = rownames(race_table),
+        main = "Difference in Disability Status, White Alone")
+
+
+chisq_result_race$stdres
+```
+
+
+```{r}
+#White Alone - not Hispanic or Latino
+race_table <- matrix(c(race$Buf_Population_Disability[8], race$Buf_Population_Nondisabled[8],
+                        race$Roch_Population_Disability[8], race$Roch_Population_Nondisabled[8]),
+                      nrow = 2, byrow = TRUE,
+                      dimnames = list(c("Buffalo", "Rochester"), c("Disability", "No Disability")))
+
+chisq_result_race <- chisq.test(race_table)
+print(chisq_result_race)
+
+barplot(race_table,
+        beside = TRUE, 
+        col = c("lightblue", "pink"),
+        ylim = c(0, max(race_table) * 1.4),
+        legend = rownames(race_table),
+        main = "Difference in Disability Status, White Alone - Not Hispanic or Latino")
+
+
+chisq_result_race$stdres
+```
+
+```{r}
+#Hispanic or Latino
+race_table <- matrix(c(race$Buf_Population_Disability[9], race$Buf_Population_Nondisabled[9],
+                        race$Roch_Population_Disability[9], race$Roch_Population_Nondisabled[9]),
+                      nrow = 2, byrow = TRUE,
+                      dimnames = list(c("Buffalo", "Rochester"), c("Disability", "No Disability")))
+
+chisq_result_race <- chisq.test(race_table)
+print(chisq_result_race)
+
+barplot(race_table,
+        beside = TRUE, 
+        col = c("lightblue", "pink"),
+        ylim = c(0, max(race_table) * 1.4),
+        legend = rownames(race_table),
+        main = "Difference in Disability Status, Hispanic or Latino (of any race)")
+
+
+chisq_result_race$stdres
+```
+
+
+```{r}
+#American Indian and Alaska Native alone
+
+race_table <- matrix(c(race$Buf_Population_Disability[3], race$Buf_Population_Nondisabled[3],
+                        race$Roch_Population_Disability[3], race$Roch_Population_Nondisabled[3]),
+                      nrow = 2, byrow = TRUE,
+                      dimnames = list(c("Buffalo", "Rochester"), c("Disability", "No Disability")))
+
+chisq_result_race <- chisq.test(race_table)
+print(chisq_result_race)
+
+barplot(race_table,
+        beside = TRUE, 
+        col = c("lightblue", "pink"),
+        legend = rownames(race_table),
+        ylim = c(0, max(race_table) * 1.4),
+        main = "Difference in Disability Status, American Indian and Alaska Native")
+
+
+chisq_result_race$stdres
+```
+
+
+
+```{r}
+males_table <- matrix(c(sex$Buf_Population_Disability[1], sex$Buf_Population_Nondisabled[1],
+                        sex$Roch_Population_Disability[1], sex$Roch_Population_Nondisabled[1]),
+                      nrow = 2, byrow = TRUE,
+                      dimnames = list(c("Buffalo", "Rochester"), c("Disability", "No Disability")))
+
+chisq_result_males <- chisq.test(males_table)
+print(chisq_result_males)
+
+
+barplot(males_table,
+        beside = TRUE, 
+        col = c("lightblue", "pink"),
+        legend = rownames(males_table),
+        ylim = c(0, max(males_table) * 1.4),
+        main = "Difference in Disability Status, Men")
+
+
+chisq_result_males$stdres
+
+```
+
+```{r}
+females_table <- matrix(c(sex$Buf_Population_Disability[2], sex$Buf_Population_Nondisabled[2],
+                        sex$Roch_Population_Disability[2], sex$Roch_Population_Nondisabled[2]),
+                      nrow = 2, byrow = TRUE,
+                      dimnames = list(c("Buffalo", "Rochester"), c("Disability", "No Disability")))
+
+chisq_result_females <- chisq.test(females_table)
+print(chisq_result_females)
+
+barplot(females_table,
+        beside = TRUE, 
+        col = c("lightblue", "lightpink"),
+        legend = rownames(females_table),
+        ylim = c(0, max(females_table) * 1.5),
+        main = "Difference in Disability Status, Women")
+
+
+chisq_result_females$stdres
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
