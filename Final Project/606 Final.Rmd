@@ -4,7 +4,11 @@ author: "Lu Beyer"
 date: "4/27/2024"
 output: pdf_document
 ---
+# Abstract
 
+# Introduction
+
+# Data	
 
 ```{r}
 library(tidyverse)
@@ -44,10 +48,13 @@ age <- data %>%
 general <- data %>% 
   slice(1, 3:4, 6:14, 16:21) %>% 
   drop_na()
+
+head(general, 5)
 ```
 
+# Summary Statistics
 
-
+### Disabilty Rates by Age
 ```{r}
 cat <- c("Under 5 years", "5 to 17 years", "18 to 34 years", "35 to 64 years", "65 to 74 years", "75 years and over")
 
@@ -64,6 +71,7 @@ ggplot(data = age_long, aes(x = Category, y = Disability_Percentage, fill = City
   coord_flip()
 ```
 
+### Disability Rates by Sex
 ```{r}
 sex_long <- sex %>%
   pivot_longer(
@@ -75,7 +83,7 @@ sex_long <- sex %>%
 ggplot(data = sex_long, aes(x = Category, y = Disability_Percentage, fill = City)) +
   geom_bar(stat = "identity", position = "dodge")
 ```
-
+### Disabiliy Rates by Race
 ```{r}
 race_long <- race %>%
   pivot_longer(
@@ -90,8 +98,9 @@ ggplot(data = race_long, aes(x = Category, y = Disability_Percentage, fill = Cit
 ```
 
 
+# Chi-Square Tests
 
-
+### General Population
 ```{r}
 general_table <- matrix(c(general$Buf_Population_Disability[1], general$Buf_Population_Nondisabled[1],
                         general$Roch_Population_Disability[1], general$Roch_Population_Nondisabled[1]),
@@ -110,6 +119,8 @@ barplot(general_table,
 
 print(chisq_result_general$residuals)
 ```
+
+### Population - Under 5
 ```{r}
 #Under 5
 age_table <- matrix(c(age$Buf_Population_Disability[1], age$Buf_Population_Nondisabled[1],
@@ -131,6 +142,7 @@ barplot(age_table,
 chisq_result_age$stdres
 ```
 
+### Population - Between 5 to 17 Years
 ```{r}
 #5 to 17 Years
 age_table <- matrix(c(age$Buf_Population_Disability[2], age$Buf_Population_Nondisabled[2],
@@ -152,6 +164,7 @@ barplot(age_table,
 chisq_result_age$stdres
 ```
 
+### Population - Between 18 and 34 Years
 ```{r}
 #18 to 34 Years
 age_table <- matrix(c(age$Buf_Population_Disability[3], age$Buf_Population_Nondisabled[3],
@@ -173,6 +186,7 @@ barplot(age_table,
 chisq_result_age$stdres
 ```
 
+### Population - Two or More Races
 ```{r}
 #Two or More Races
 race_table <- matrix(c(race$Buf_Population_Disability[7], race$Buf_Population_Nondisabled[7],
@@ -194,6 +208,8 @@ barplot(race_table,
 chisq_result_race$stdres
 ```
 
+
+### Population - White Alone
 ```{r}
 #White
 race_table <- matrix(c(race$Buf_Population_Disability[1], race$Buf_Population_Nondisabled[1],
@@ -215,7 +231,7 @@ barplot(race_table,
 chisq_result_race$stdres
 ```
 
-
+### Population - White Alone, Not Hispanic or Latino
 ```{r}
 #White Alone - not Hispanic or Latino
 race_table <- matrix(c(race$Buf_Population_Disability[8], race$Buf_Population_Nondisabled[8],
@@ -237,6 +253,7 @@ barplot(race_table,
 chisq_result_race$stdres
 ```
 
+### Population - Hispanic or Latino
 ```{r}
 #Hispanic or Latino
 race_table <- matrix(c(race$Buf_Population_Disability[9], race$Buf_Population_Nondisabled[9],
@@ -258,6 +275,7 @@ barplot(race_table,
 chisq_result_race$stdres
 ```
 
+### Population - American Indian and Alaska Native Alone
 
 ```{r}
 #American Indian and Alaska Native alone
@@ -282,7 +300,7 @@ chisq_result_race$stdres
 ```
 
 
-
+### Population - Men
 ```{r}
 males_table <- matrix(c(sex$Buf_Population_Disability[1], sex$Buf_Population_Nondisabled[1],
                         sex$Roch_Population_Disability[1], sex$Roch_Population_Nondisabled[1]),
@@ -305,6 +323,7 @@ chisq_result_males$stdres
 
 ```
 
+### Population - Women
 ```{r}
 females_table <- matrix(c(sex$Buf_Population_Disability[2], sex$Buf_Population_Nondisabled[2],
                         sex$Roch_Population_Disability[2], sex$Roch_Population_Nondisabled[2]),
@@ -329,7 +348,7 @@ chisq_result_females$stdres
 
 
 
-
+# Conclusion
 
 
 
