@@ -8,7 +8,16 @@ output: pdf_document
 
 # Introduction
 
+
+
+# Research Questions
+Null Hypothesis:  There is no statistically significant difference in disability rate between Buffalo and Rochester NY
+Alternate Hypothesis:  There is a significant statistical difference in disability rate between Buffalo and Rochester NY
+
 # Data	
+Data was pulled from US Census, through the 2022 American Community Survey - https://data.census.gov/table/ACSST1Y2022.S1810?q=disability&g=310XX00US15380,40380&moe=false&tp=false
+
+We are looking at Buffalo and Rochester Metro Areas, rather than strictly city limits, as they are closer in terms of total population for comparison.
 
 ```{r}
 library(tidyverse)
@@ -97,6 +106,18 @@ ggplot(data = race_long, aes(x = Category, y = Disability_Percentage, fill = Cit
   coord_flip()
 ```
 
+Looking at the summary statistic charts, I’ve identified the following demographics as the most likely to have a statistically significant difference in disability rates, due to their notably large differences in rates
+
+Age:
+0 - 5
+5 - 17
+
+Race:
+Two or more races
+Some other race
+Hispanic
+American Indian and Alaska Native
+
 
 # Chi-Square Tests
 
@@ -120,27 +141,7 @@ barplot(general_table,
 print(chisq_result_general$residuals)
 ```
 
-### Population - Under 5
-```{r}
-#Under 5
-age_table <- matrix(c(age$Buf_Population_Disability[1], age$Buf_Population_Nondisabled[1],
-                        age$Roch_Population_Disability[1], age$Roch_Population_Nondisabled[1]),
-                      nrow = 2, byrow = TRUE,
-                      dimnames = list(c("Buffalo", "Rochester"), c("Disability", "No Disability")))
-
-chisq_result_age <- chisq.test(age_table)
-print(chisq_result_age)
-
-barplot(age_table,
-        beside = TRUE, 
-        col = c("lightblue", "pink"),
-        ylim = c(0, max(age_table) * 1.4),
-        legend = rownames(age_table),
-        main = "Difference in Disability Status, Age Under 5 Years")
-
-
-chisq_result_age$stdres
-```
+We can see that for the general population, the p-value is below 2.2e-16 which is under the p-value limit of 0.05, and can say that there is significant statistical difference in the disability rates between Buffalo and Rochester.  Looking futher at the chi-squared residuals, we can see that the data skews to show Buffalo having a lower disability rate compared to Rochester.
 
 ### Population - Between 5 to 17 Years
 ```{r}
@@ -163,6 +164,40 @@ barplot(age_table,
 
 chisq_result_age$stdres
 ```
+
+
+
+### Population - Under 5
+```{r}
+#Under 5
+age_table <- matrix(c(age$Buf_Population_Disability[1], age$Buf_Population_Nondisabled[1],
+                        age$Roch_Population_Disability[1], age$Roch_Population_Nondisabled[1]),
+                      nrow = 2, byrow = TRUE,
+                      dimnames = list(c("Buffalo", "Rochester"), c("Disability", "No Disability")))
+
+chisq_result_age <- chisq.test(age_table)
+print(chisq_result_age)
+
+barplot(age_table,
+        beside = TRUE, 
+        col = c("lightblue", "pink"),
+        ylim = c(0, max(age_table) * 1.4),
+        legend = rownames(age_table),
+        main = "Difference in Disability Status, Age Under 5 Years")
+
+
+chisq_result_age$stdres
+```
+Here the disability rates for 0 - 5 is significant, with Rochester having lower rates compared to Buffalo for this demographic for the first time in our tests.  However, looking at the data, it seems like the reported population for ages 0 - 5 in Rochester is suspiciously low.  When organizing the primary demographics by rate, we can see the Rochester 0 - 5 age demographic has a rate of 0.002, with the next lowest having a rate of 0.09.
+
+```{r}
+general %>%
+  arrange(Roch_Disability_Percentage) %>% 
+  select(Category, Roch_Disability_Percentage)
+  slice_head(n = 3)   
+```
+
+
 
 ### Population - Between 18 and 34 Years
 ```{r}
