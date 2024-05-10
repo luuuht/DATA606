@@ -1,12 +1,14 @@
 ---
-title: "606 Final"
+title: "Disability Rate Comparisons Across Demographics Between Buffalo and Rochester NY - 606 Final"
 author: "Lu Beyer"
-date: "4/27/2024"
+date: "05/08/2024"
 output: pdf_document
 ---
 # Abstract
 
-# Introduction
+This research is intended to view and compare disability rates across demographics in Buffalo and Rochester New York Metro Areas.  The Metro Areas of both Buffalo and Rochester are similarly sized in population, and are based near each other in the same Western New York Region.  Given this information, one might not expect a significant difference between the two cities.  However, if a statistically significant difference existed, we could begin looking into the factors that may contribute to any differences in disability rates between the two cities.  
+
+Data was sourced from the US Census, specifically the 2022 American Community Survey.  Comparisons were performed using chi-square tests, comparing the population who reported identifying as disabled between the two cities.  After running chi-square tests across multiple demographics, the data showed that Rochester NY had a statistically higher disability rate compared to Buffalo across the general population, as well as most selected general demographics.  
 
 
 
@@ -188,13 +190,13 @@ barplot(age_table,
 
 chisq_result_age$stdres
 ```
-Here the disability rates for 0 - 5 is significant, with Rochester having lower rates compared to Buffalo for this demographic for the first time in our tests.  However, looking at the data, it seems like the reported population for ages 0 - 5 in Rochester is suspiciously low.  When organizing the primary demographics by rate, we can see the Rochester 0 - 5 age demographic has a rate of 0.002, with the next lowest having a rate of 0.09.
+Here the disability rates for 0 - 5 is significant, with Rochester having lower rates compared to Buffalo for this demographic for the first time in our tests.  However, looking at the data, it seems like the reported population for ages 0 - 5 in Rochester is suspiciously low.  When organizing the primary demographics by rate, we can see the Rochester 0 - 5 age demographic has a rate of 0.002, with the next lowest having a rate of 0.09, 45 times smaller than the next lowest.
 
 ```{r}
 general %>%
   arrange(Roch_Disability_Percentage) %>% 
-  select(Category, Roch_Disability_Percentage)
-  slice_head(n = 3)   
+  select(Category, Roch_Population_Disability, Roch_Population_Nondisabled, Roch_Disability_Percentage) %>% 
+  head(3)   
 ```
 
 
@@ -266,27 +268,6 @@ barplot(race_table,
 chisq_result_race$stdres
 ```
 
-### Population - White Alone, Not Hispanic or Latino
-```{r}
-#White Alone - not Hispanic or Latino
-race_table <- matrix(c(race$Buf_Population_Disability[8], race$Buf_Population_Nondisabled[8],
-                        race$Roch_Population_Disability[8], race$Roch_Population_Nondisabled[8]),
-                      nrow = 2, byrow = TRUE,
-                      dimnames = list(c("Buffalo", "Rochester"), c("Disability", "No Disability")))
-
-chisq_result_race <- chisq.test(race_table)
-print(chisq_result_race)
-
-barplot(race_table,
-        beside = TRUE, 
-        col = c("lightblue", "pink"),
-        ylim = c(0, max(race_table) * 1.4),
-        legend = rownames(race_table),
-        main = "Difference in Disability Status, White Alone - Not Hispanic or Latino")
-
-
-chisq_result_race$stdres
-```
 
 ### Population - Hispanic or Latino
 ```{r}
@@ -380,10 +361,15 @@ chisq_result_females$stdres
 
 ```
 
-
+We can note that across all racial demographics, Rochester reported statistically higher disability rates compared to Buffalo, with the exception of those who identify as White, who were linked to higher disability rates in Buffalo.
 
 
 # Conclusion
+
+After analyzing two comparably sized populations in a shared geographic area, it has been established that there is a clear statistical difference in the disability rates between these two cities.  Given this information, we can begin to look at what other factors differ between the two populations that may contribute to this rate difference.  Establishing evidence of this disparity is an important first step in addressing potential inequity.
+
+A significant limitation of this data was difficult to look at intersecting demographics.  Due to the default aggregation of counts to each demographic group, it was more difficult to analyze trends across multiple overlapping demographics.  Additionally, while we can see that there is a statistical difference in disability rates, the data does not necessarily show us what is causing these differences, nor the context of each city’s material conditions, only that specific demographics may be more significantly impacted by the conditions that do exist.  
+
 
 
 
